@@ -13,6 +13,7 @@
 #import "STPPaymentOption.h"
 
 @class STPPaymentMethodAUBECSDebit,
+STPPaymentMethodBancontact,
 STPPaymentMethodBillingDetails,
 STPPaymentMethodCard,
 STPPaymentMethodCardPresent,
@@ -90,6 +91,11 @@ NS_ASSUME_NONNULL_BEGIN
  If this is an AU BECS Debit PaymentMethod (i.e. `self.type == STPPaymentMethodTypeAUBECSDebit`), this contains additional details.
 */
 @property (nonatomic, nullable, readonly) STPPaymentMethodAUBECSDebit *auBECSDebit;
+
+/**
+ If this is a Bancontact PaymentMethod (i.e. `self.type == STPPaymentMethodTypeBancontact`), this contains additional details.
+*/
+@property (nonatomic, nullable, readonly) STPPaymentMethodBancontact *bancontact;
 
 /**
  The ID of the Customer to which this PaymentMethod is saved. Nil when the PaymentMethod has not been saved to a Customer.

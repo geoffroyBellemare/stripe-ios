@@ -313,6 +313,7 @@ withAuthenticationContext:(id<STPAuthenticationContext>)authenticationContext
         case STPPaymentMethodTypeiDEAL:
         case STPPaymentMethodTypeFPX:
         case STPPaymentMethodTypeCardPresent:
+        case STPPaymentMethodTypeBancontact:
             // fall through
         case STPPaymentMethodTypeUnknown:
             return NO;

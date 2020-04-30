@@ -14,13 +14,14 @@
 #import "STPImageLibrary+Private.h"
 #import "STPLocalizationUtils.h"
 #import "STPPaymentMethod+Private.h"
+#import "STPPaymentMethodBacsDebit.h"
+#import "STPPaymentMethodBancontactParams.h"
 #import "STPPaymentMethodCardParams.h"
 #import "STPPaymentMethodFPX.h"
 #import "STPPaymentMethodFPXParams.h"
 #import "STPPaymentMethodiDEAL.h"
 #import "STPPaymentMethodiDEALParams.h"
 #import "STPPaymentMethodSEPADebitParams.h"
-#import "STPPaymentMethodBacsDebit.h"
 
 @implementation STPPaymentMethodParams
 
@@ -84,6 +85,17 @@ billingDetails:(STPPaymentMethodBillingDetails *)billingDetails
     return params;
 }
 
++ (nullable STPPaymentMethodParams *)paramsWithBancontact:(STPPaymentMethodBancontactParams *)bancontact
+                                           billingDetails:(STPPaymentMethodBillingDetails *)billingDetails
+                                                 metadata:(nullable NSDictionary<NSString *, NSString *> *)metadata {
+    STPPaymentMethodParams *params = [self new];
+    params.type = STPPaymentMethodTypeBancontact;
+    params.bancontact = bancontact;
+    params.billingDetails = billingDetails;
+    params.metadata = metadata;
+    return params;
+}
+
 + (nullable STPPaymentMethodParams *)paramsWithSingleUsePaymentMethod:(STPPaymentMethod *)paymentMethod {
     STPPaymentMethodParams *params = [self new];
     switch ([paymentMethod type]) {
@@ -103,6 +115,15 @@ billingDetails:(STPPaymentMethodBillingDetails *)billingDetails
             STPPaymentMethodiDEALParams *iDEAL = [[STPPaymentMethodiDEALParams alloc] init];
             params.iDEAL = iDEAL;
             params.iDEAL.bankName = paymentMethod.iDEAL.bankName;
+            params.billingDetails = paymentMethod.billingDetails;
+            params.metadata = paymentMethod.metadata;
+            break;
+        }
+        case STPPaymentMethodTypeBancontact:
+        {
+            params.type = STPPaymentMethodTypeBancontact;
+            STPPaymentMethodBancontactParams *bancontact = [[STPPaymentMethodBancontactParams alloc] init];
+            params.bancontact = bancontact;
             params.billingDetails = paymentMethod.billingDetails;
             params.metadata = paymentMethod.metadata;
             break;
@@ -145,6 +166,7 @@ billingDetails:(STPPaymentMethodBillingDetails *)billingDetails
              NSStringFromSelector(@selector(sepaDebit)): @"sepa_debit",
              NSStringFromSelector(@selector(bacsDebit)): @"bacs_debit",
              NSStringFromSelector(@selector(auBECSDebit)): @"au_becs_debit",
+             NSStringFromSelector(@selector(bancontact)): @"bancontact",
              NSStringFromSelector(@selector(metadata)): @"metadata",
              };
 }
@@ -194,6 +216,8 @@ billingDetails:(STPPaymentMethodBillingDetails *)billingDetails
             return @"Bacs Debit";
         case STPPaymentMethodTypeAUBECSDebit:
             return @"AU BECS Debit";
+        case STPPaymentMethodTypeBancontact:
+            return @"Bancontact";
         case STPPaymentMethodTypeCardPresent:
         case STPPaymentMethodTypeUnknown:
             return STPLocalizedString(@"Unknown", @"Default missing source type label");
@@ -213,6 +237,7 @@ billingDetails:(STPPaymentMethodBillingDetails *)billingDetails
         case STPPaymentMethodTypeiDEAL:
         case STPPaymentMethodTypeFPX:
         case STPPaymentMethodTypeCardPresent:
+        case STPPaymentMethodTypeBancontact:
             // fall through
         case STPPaymentMethodTypeUnknown:
             return NO;
